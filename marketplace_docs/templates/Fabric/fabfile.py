@@ -102,6 +102,12 @@ def run_scripts():
         run("chmod +x %s" % rfile)
         run(rfile)
 
+def setup_interactive_login_script():
+    run("mkdir /opt/zulip")
+    put("interactive_script.sh", "/opt/zulip/interactive_script.sh")
+    run("chmod +x /opt/zulip/interactive_script.sh")
+    run("cp /root/.bashrc /etc/skel/.zulip_bashrc")
+    run("echo '/opt/zulip/interactive_script.sh' >> /root/.bashrc")
 
 @task
 def build_image():
@@ -111,6 +117,7 @@ def build_image():
     install_pkgs()
     install_files()
     run_scripts()
+    setup_interactive_login_script()
     clean_up()
     run("exit")
     print "----------------------------------------------------------------"
@@ -127,4 +134,5 @@ def build_test():
     install_pkgs()
     install_files()
     run_scripts()
+    setup_interactive_login_script()
     print "Build complete.  This droplet is NOT ready for use.  Use build_image instead of build_test for your final build"
