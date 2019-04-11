@@ -40,3 +40,10 @@ Thumbs.db
 ######################
 .vscode
 
+# PIP, Virtulenv and Python files
+bin/
+include/
+lib/
+local/
+*.pyc
+pip-selfcheck.json
