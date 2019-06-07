@@ -22,6 +22,6 @@ array=(./zulip-server-*)
 rm -f /etc/zulip/zulip-secrets.conf /etc/zulip/settings.py
 
 # Remove unnessary messages set by Ubuntu that appears during user login.
- rm /etc/update-motd.d/00-header
- rm /etc/update-motd.d/10-help-text
- rm /etc/update-motd.d/51-cloudguest
+ rm -f /etc/update-motd.d/00-header
+ rm -f /etc/update-motd.d/10-help-text
+ rm -f /etc/update-motd.d/51-cloudguest
