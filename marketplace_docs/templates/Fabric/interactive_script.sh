@@ -43,4 +43,6 @@ if [ "$?" = 1 ]; then
 else
    cp -f /etc/skel/.zulip_bashrc /root/.bashrc
    touch /opt/zulip/.configured
+   # Re-enable the systemd job we disabled in image creation.
+   systemctl enable --quiet apt-daily.timer apt-daily-upgrade.timer
 fi
