@@ -11,7 +11,7 @@ echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends && \
     apt-get -q update && \
     apt-get -q install locales && \
     locale-gen en_US.UTF-8 && \
-    apt-get -q dist-upgrade -y
+    DEBIAN_FRONTEND=noninteractive apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" dist-upgrade
 
 wget https://www.zulip.org/dist/releases/zulip-server-latest.tar.gz
 tar -xf zulip-server-latest.tar.gz
