@@ -39,9 +39,9 @@ def install_files():
     File permissions will be inherited.  If you need to change permissions on uploaded files
     you can do so in a script placed in the "scripts" directory.
     """
-    print "--------------------------------------------------"
-    print "Copying files in ./files to remote server"
-    print "--------------------------------------------------"
+    print("--------------------------------------------------")
+    print("Copying files in ./files to remote server")
+    print("--------------------------------------------------")
     rootDir = './files'
     for dirName, subdirList, fileList in os.walk(rootDir):
         #print('Found directory: %s' % dirName)
@@ -67,9 +67,9 @@ def install_pkgs():
     #run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
     #run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
     run("DEBIAN_FRONTEND=noninteractive")
-    print "--------------------------------------------------"
-    print "Installing apt packages in packages.txt"
-    print "--------------------------------------------------"
+    print("--------------------------------------------------")
+    print("Installing apt packages in packages.txt")
+    print("--------------------------------------------------")
     run("apt-get -qqy update")
     run("apt-get -qqy -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" upgrade")
     run("apt-get -qqy -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" install {}".format(APT_PACKAGES))
@@ -86,9 +86,9 @@ def run_scripts():
     Scripts are run in alpha-numeric order.  We recommend naming your scripts
     with a name that starts with a two digit number 01-99 to ensure run order.
     """
-    print "--------------------------------------------------"
-    print "Running scripts in ./scripts"
-    print "--------------------------------------------------"
+    print("--------------------------------------------------")
+    print("Running scripts in ./scripts")
+    print("--------------------------------------------------")
     
     cwd = os.getcwd()
     directory = cwd + "/scripts"
@@ -120,10 +120,10 @@ def build_image():
     setup_interactive_login_script()
     clean_up()
     run("exit")
-    print "----------------------------------------------------------------"
-    print " Build Complete.  Shut down your build droplet from the control"
-    print " panel before creating your snapshot."
-    print "----------------------------------------------------------------"
+    print("----------------------------------------------------------------")
+    print(" Build Complete.  Shut down your build droplet from the control")
+    print(" panel before creating your snapshot.")
+    print("----------------------------------------------------------------")
     
 
 @task
@@ -135,4 +135,4 @@ def build_test():
     install_files()
     run_scripts()
     setup_interactive_login_script()
-    print "Build complete.  This droplet is NOT ready for use.  Use build_image instead of build_test for your final build"
+    print("Build complete.  This droplet is NOT ready for use.  Use build_image instead of build_test for your final build")
