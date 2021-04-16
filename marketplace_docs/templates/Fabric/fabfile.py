@@ -57,6 +57,8 @@ def install_files():
             put(lpath,rpath,mirror_local_mode=True)
 
 
+def wait_for_apt_dpkg_lock_release():
+    run("while fuser /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock >/dev/null 2>&1; do echo 'Waiting for apt/dpkg lock release' sleep 2; done")
     
 
 def install_pkgs():
@@ -67,6 +69,9 @@ def install_pkgs():
     #run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
     #run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
     run("DEBIAN_FRONTEND=noninteractive")
+
+    wait_for_apt_dpkg_lock_release()
+
     print("--------------------------------------------------")
     print("Installing apt packages in packages.txt")
     print("--------------------------------------------------")
