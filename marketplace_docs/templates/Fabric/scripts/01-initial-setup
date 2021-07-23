@@ -45,3 +45,4 @@ ufw allow 25
 
 # The --force prevents an interactive prompt
 ufw --force enable
+systemctl enable ufw
