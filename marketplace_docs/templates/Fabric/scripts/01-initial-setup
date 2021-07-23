@@ -42,4 +42,6 @@ ufw allow http
 ufw allow https
 # Used by Zulip's incoming email gateway. For more details see https://zulip.readthedocs.io/en/latest/production/email-gateway.html
 ufw allow 25
-ufw enable
+
+# The --force prevents an interactive prompt
+ufw --force enable
