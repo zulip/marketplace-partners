@@ -6,12 +6,12 @@
 # remove the scripts from your build system after they have run
 # if you use the build_image task.
 #
-echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends && \
-    echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends && \
-    apt-get -q update && \
-    apt-get -q install locales && \
-    locale-gen en_US.UTF-8 && \
-    DEBIAN_FRONTEND=noninteractive apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" dist-upgrade
+echo 'APT::Install-Recommends 0;' >>/etc/apt/apt.conf.d/01norecommends &&
+	echo 'APT::Install-Suggests 0;' >>/etc/apt/apt.conf.d/01norecommends &&
+	apt-get -q update &&
+	apt-get -q install locales &&
+	locale-gen en_US.UTF-8 &&
+	DEBIAN_FRONTEND=noninteractive apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" dist-upgrade
 
 wget https://www.zulip.org/dist/releases/zulip-server-latest.tar.gz
 tar -xf zulip-server-latest.tar.gz
@@ -22,9 +22,9 @@ array=(./zulip-server-*)
 rm -f /etc/zulip/zulip-secrets.conf /etc/zulip/settings.py
 
 # Remove unnessary messages set by Ubuntu that appears during user login.
- rm -f /etc/update-motd.d/00-header
- rm -f /etc/update-motd.d/10-help-text
- rm -f /etc/update-motd.d/51-cloudguest
+rm -f /etc/update-motd.d/00-header
+rm -f /etc/update-motd.d/10-help-text
+rm -f /etc/update-motd.d/51-cloudguest
 
 # The default Ubuntu behavior of the apt-daily.timer systemd job
 # results in `apt update` running immediately on boot if it's been
