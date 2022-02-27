@@ -57,12 +57,6 @@ def install_files():
             put(lpath, rpath, mirror_local_mode=True)
 
 
-def wait_for_apt_dpkg_lock_release():
-    run(
-        "while fuser /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock >/dev/null 2>&1; do echo 'Waiting for apt/dpkg lock release' sleep 2; done"
-    )
-
-
 def install_pkgs():
     """
     Install apt packages listed in APT_PACKAGES
@@ -72,17 +66,15 @@ def install_pkgs():
     # run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
     run("DEBIAN_FRONTEND=noninteractive")
 
-    wait_for_apt_dpkg_lock_release()
-
     print("--------------------------------------------------")
     print("Installing apt packages in packages.txt")
     print("--------------------------------------------------")
-    run("apt-get -qqy update")
+    run("apt-get -o DPkg::Lock::Timeout=120 -qqy update")
     run(
-        'apt-get -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
+        'apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
     )
     run(
-        'apt-get -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install {}'.format(
+        'apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install {}'.format(
             APT_PACKAGES
         )
     )
