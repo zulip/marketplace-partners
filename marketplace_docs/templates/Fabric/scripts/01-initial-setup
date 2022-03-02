@@ -20,6 +20,11 @@ array=(./zulip-server-*)
 "${array[0]}"/scripts/setup/install --email=mail@example.com --hostname "$(hostname -f)" --no-init-db --self-signed-cert
 
 rm -f /etc/zulip/zulip-secrets.conf /etc/zulip/settings.py
+rm -f /var/lib/rabbitmq/.erlang.cookie
+
+# This triggers the regeneration of the Erlang cookie, and the
+# rabbitmq users.
+echo >>/etc/rabbitmq/rabbitmq-env.conf
 
 # Remove unnessary messages set by Ubuntu that appears during user login.
 rm -f /etc/update-motd.d/00-header
