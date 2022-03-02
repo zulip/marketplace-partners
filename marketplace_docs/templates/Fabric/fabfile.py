@@ -1,10 +1,11 @@
- #!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from fabric.api import *
 import os
 
-f = open("./packages.txt","r")
+from fabric.api import *
+
+f = open("./packages.txt", "r")
 APT_PACKAGES = f.read()
 
 env.user = "root"
@@ -31,7 +32,6 @@ def clean_up():
     run("cat /dev/null > /var/log/lastlog; cat /dev/null > /var/log/wtmp")
 
 
-
 def install_files():
     """
     Install files onto remote machine.
@@ -42,10 +42,10 @@ def install_files():
     print("--------------------------------------------------")
     print("Copying files in ./files to remote server")
     print("--------------------------------------------------")
-    rootDir = './files'
+    rootDir = "./files"
     for dirName, subdirList, fileList in os.walk(rootDir):
-        #print('Found directory: %s' % dirName)
-        cDir = dirName.replace("./files","")
+        # print('Found directory: %s' % dirName)
+        cDir = dirName.replace("./files", "")
         print("Entering Directory: %s" % cDir)
         if cDir:
             run("mkdir -p %s" % cDir)
@@ -53,21 +53,23 @@ def install_files():
             cwd = os.getcwd()
             rpath = cDir + "/" + fname
             lpath = cwd + "/files" + cDir + "/" + fname
-            print('Moving File: %s' % lpath)
-            put(lpath,rpath,mirror_local_mode=True)
+            print("Moving File: %s" % lpath)
+            put(lpath, rpath, mirror_local_mode=True)
 
 
 def wait_for_apt_dpkg_lock_release():
-    run("while fuser /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock >/dev/null 2>&1; do echo 'Waiting for apt/dpkg lock release' sleep 2; done")
-    
+    run(
+        "while fuser /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock >/dev/null 2>&1; do echo 'Waiting for apt/dpkg lock release' sleep 2; done"
+    )
+
 
 def install_pkgs():
     """
     Install apt packages listed in APT_PACKAGES
     """
-    #Postfix won't install without a prompt without setting some things
-    #run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
-    #run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
+    # Postfix won't install without a prompt without setting some things
+    # run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
+    # run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
     run("DEBIAN_FRONTEND=noninteractive")
 
     wait_for_apt_dpkg_lock_release()
@@ -76,14 +78,21 @@ def install_pkgs():
     print("Installing apt packages in packages.txt")
     print("--------------------------------------------------")
     run("apt-get -qqy update")
-    run("apt-get -qqy -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" upgrade")
-    run("apt-get -qqy -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" install {}".format(APT_PACKAGES))
+    run(
+        'apt-get -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
+    )
+    run(
+        'apt-get -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install {}'.format(
+            APT_PACKAGES
+        )
+    )
 
     # example 3rd paty repo and install certbot
-    #run("apt-get -qqy install software-properties-common")
-    #run("add-apt-repository ppa:certbot/certbot -y")
-    #run("apt-get -qqy update")
-    #run("apt-get -qqy install python-certbot-apache")
+    # run("apt-get -qqy install software-properties-common")
+    # run("add-apt-repository ppa:certbot/certbot -y")
+    # run("apt-get -qqy update")
+    # run("apt-get -qqy install python-certbot-apache")
+
 
 def run_scripts():
     """
@@ -94,18 +103,19 @@ def run_scripts():
     print("--------------------------------------------------")
     print("Running scripts in ./scripts")
     print("--------------------------------------------------")
-    
+
     cwd = os.getcwd()
     directory = cwd + "/scripts"
 
     for f in os.listdir(directory):
-        
+
         lfile = cwd + "/scripts/" + f
         rfile = "/tmp/" + f
         print("Processing script in %s" % lfile)
-        put(lfile,rfile)
+        put(lfile, rfile)
         run("chmod +x %s" % rfile)
         run(rfile)
+
 
 def setup_interactive_login_script():
     run("mkdir /opt/zulip")
@@ -113,6 +123,7 @@ def setup_interactive_login_script():
     run("chmod +x /opt/zulip/interactive_script.sh")
     run("cp /root/.bashrc /etc/skel/.zulip_bashrc")
     run("echo '/opt/zulip/interactive_script.sh' >> /root/.bashrc")
+
 
 @task
 def build_image():
@@ -129,7 +140,7 @@ def build_image():
     print(" Build Complete.  Shut down your build droplet from the control")
     print(" panel before creating your snapshot.")
     print("----------------------------------------------------------------")
-    
+
 
 @task
 def build_test():
@@ -140,4 +151,6 @@ def build_test():
     install_files()
     run_scripts()
     setup_interactive_login_script()
-    print("Build complete.  This droplet is NOT ready for use.  Use build_image instead of build_test for your final build")
+    print(
+        "Build complete.  This droplet is NOT ready for use.  Use build_image instead of build_test for your final build"
+    )
