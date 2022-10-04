@@ -26,6 +26,9 @@ def clean_up():
     run("rm -rf /var/lib/cloud/instances/*")
     run("rm -rf /var/lib/cloud/instance")
     run(": > /var/mail/$USER")
+    # droplet-agent nedes to be removed to avoid "DigitalOcean directory detected." test failure.
+    run("apt-get purge droplet-agent -y")
+
     puts("Removing keys...")
     run("rm -f /root/.ssh/authorized_keys /etc/ssh/*key*")
     run("dd if=/dev/zero of=/zerofile; sync; rm /zerofile; sync")
