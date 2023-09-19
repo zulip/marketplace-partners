@@ -67,17 +67,16 @@ def install_pkgs():
     # Postfix won't install without a prompt without setting some things
     # run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
     # run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
-    run("DEBIAN_FRONTEND=noninteractive")
 
     print("--------------------------------------------------")
     print("Installing apt packages in packages.txt")
     print("--------------------------------------------------")
     run("apt-get -o DPkg::Lock::Timeout=120 -qqy update")
     run(
-        'apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
+        'DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
     )
     run(
-        'apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install {}'.format(
+        'DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install {}'.format(
             APT_PACKAGES
         )
     )
