@@ -34,16 +34,6 @@ rm -f /etc/update-motd.d/00-header
 rm -f /etc/update-motd.d/10-help-text
 rm -f /etc/update-motd.d/51-cloudguest
 
-# The default Ubuntu behavior of the apt-daily.timer systemd job
-# results in `apt update` running immediately on boot if it's been
-# more than a day since the image was generated.  This can end up
-# conflicting with the other `apt` invocations run by the Zulip
-# interactive installer.  So we disabled it here and then re-enable it
-# once interactive_script.sh completes successfully.
-#
-# For more details see https://chat.zulip.org/#narrow/stream/3-backend/topic/apt-daily
-systemctl disable apt-daily.timer apt-daily-upgrade.timer
-
 # Configure firewall. Else, img_check.sh will warn that ufw is not configured.
 ufw allow ssh
 ufw allow http

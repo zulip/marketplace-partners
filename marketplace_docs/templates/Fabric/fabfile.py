@@ -125,11 +125,34 @@ def configure_swap():
     run("swapon /swapfile")
     run("echo '/swapfile none swap sw 0 0' >> /etc/fstab")
 
+def disable_conflicting_services():
+    # The default Ubuntu behavior of the apt-daily.timer systemd job
+    # results in `apt update` running immediately on boot if it's been
+    # more than a day since the image was generated.  This can end up
+    # conflicting with the other `apt` invocations run by the Zulip
+    # interactive installer.  So we disabled it here and then re-enable it
+    # once interactive_script.sh completes successfully.
+    #
+    # For more details see https://chat.zulip.org/#narrow/stream/3-backend/topic/apt-daily
+    run("systemctl disable apt-daily.timer apt-daily-upgrade.timer")
+
+    print("Disabled apt-daily timers. Waiting for ongoing tasks to finish...")
+    run("""
+    timeout 300 bash -c '
+    while systemctl is-active --quiet apt-daily.service apt-daily-upgrade.service; do
+        echo "Waiting for apt-daily or apt-daily-upgrade tasks to finish..."
+        sleep 5
+    done
+    '
+    """)
+    print("Finished waiting for apt-related tasks (or timed out).")
+
 @task
 def build_image():
     """
     Configure the build droplet, clean up and shut down for snapshotting
     """
+    disable_conflicting_services()
     install_pkgs()
     install_files()
     run_scripts()
