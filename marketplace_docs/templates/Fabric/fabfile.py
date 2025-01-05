@@ -118,6 +118,12 @@ def setup_interactive_login_script():
     run("cp /root/.bashrc /etc/skel/.zulip_bashrc")
     run("echo '/opt/zulip/interactive_script.sh' >> /root/.bashrc")
 
+def configure_swap():
+    run("fallocate -l 2G /swapfile")
+    run("chmod 600 /swapfile")
+    run("mkswap /swapfile")
+    run("swapon /swapfile")
+    run("echo '/swapfile none swap sw 0 0' >> /etc/fstab")
 
 @task
 def build_image():
@@ -128,6 +134,7 @@ def build_image():
     install_files()
     run_scripts()
     setup_interactive_login_script()
+    configure_swap()
     clean_up()
     run("exit")
     print("----------------------------------------------------------------")
