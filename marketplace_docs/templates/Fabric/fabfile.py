@@ -71,6 +71,12 @@ def install_pkgs():
     print("--------------------------------------------------")
     print("Installing apt packages in packages.txt")
     print("--------------------------------------------------")
+
+    # Hack: Remove the command-not-found package to avoid errors during apt-get update.
+    # Its post-update hook can fail on minimal Ubuntu installations (like on DO)
+    # due to missing command database files, and it's not essential in this environment.
+    run("apt-get remove command-not-found -o DPkg::Lock::Timeout=120 -qqy")
+
     run("apt-get -o DPkg::Lock::Timeout=120 -qqy update")
     run(
         'DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=120 -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
