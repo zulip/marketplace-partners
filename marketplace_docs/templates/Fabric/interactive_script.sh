@@ -44,7 +44,7 @@ case "${push_prompt,,}" in
                 SERVICES_FLAGS="${SERVICES_FLAGS} --no-submit-usage-statistics"
                 ;;
             *)
-                echo "Agrregate usage statistics will be uploaded."
+                echo "Aggregate usage statistics will be uploaded."
                 ;;
         esac
         ;;
